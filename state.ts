@@ -1,4 +1,100 @@
-enum EstadoCivil {Soltero, Casado, Viudo, Divorciado, Difunto}
+abstract class EstadoCivil
+{
+    persona : Persona
+    constructor(persona : Persona)
+    {
+        this.persona = persona
+    }
+    abstract casar()
+    abstract divorciar()
+    abstract enviudar()
+    abstract morir()
+    abstract toString()
+}
+
+class Soltero extends EstadoCivil
+{
+    casar() {
+        this.persona.estadoCivil = new Casado(this.persona)
+    }    
+
+    divorciar() {}
+
+    enviudar() {}
+
+    morir() {
+        this.persona.estadoCivil = new Difunto(this.persona)
+    }
+
+    toString(){
+        return "Soltero"
+    }
+}
+
+class Casado extends EstadoCivil
+{
+    casar() {}
+
+    divorciar() {
+        this.persona.estadoCivil = new Divorciado(this.persona)
+    }
+    enviudar() {
+        this.persona.estadoCivil = new Viudo(this.persona)
+    }
+    morir() {
+        this.persona.estadoCivil = new Difunto(this.persona)
+    }
+    toString(){
+        return "Casado"
+    }
+}
+
+class Viudo extends EstadoCivil
+{
+    casar() {
+        this.persona.estadoCivil = new Casado(this.persona)
+    }
+
+    divorciar() {}
+
+    enviudar() {}
+
+    morir() {
+        this.persona.estadoCivil = new Difunto(this.persona)
+    }
+    toString(){
+        return "Viudo"
+    }
+}
+
+class Divorciado extends EstadoCivil
+{
+    casar() {
+        this.persona.estadoCivil = new Casado(this.persona)
+    }    
+
+    divorciar() {}
+
+    enviudar() {}
+
+    morir() {
+        this.persona.estadoCivil = new Difunto(this.persona)
+    }
+    toString(){
+        return "Divorciado"
+    }
+}
+
+class Difunto extends EstadoCivil
+{
+    casar() {}    
+    divorciar() {}
+    enviudar() {}
+    morir() {}
+    toString(){
+        return "Difunto"
+    }
+}
 
 
 class Persona
@@ -11,59 +107,39 @@ class Persona
     constructor(nombre : string)
     {
         this.nombre = nombre
-        this.estadoCivil = EstadoCivil.Soltero
+        this.estadoCivil = new Soltero(this)
     }
 
     getEstado()
     {
-        switch(this.estadoCivil)
-        {
-            case EstadoCivil.Soltero:
-                return "Soltero"
-            case EstadoCivil.Casado:
-                return "Casado"
-            case EstadoCivil.Viudo:
-                return "Viudo"
-            case EstadoCivil.Divorciado:
-                return "Divorciado"
-            case EstadoCivil.Difunto:
-                return "Difunto"
-        }
+        return this.estadoCivil.toString()
     }
 
     casar()
     {
-        if (this.estadoCivil != EstadoCivil.Difunto)
-        {
-            this.estadoCivil = EstadoCivil.Casado
-        }
+        this.estadoCivil.casar()
     }
 
     divorciar()
     {
-        if (this.estadoCivil == EstadoCivil.Casado)
-        {
-            this.estadoCivil = EstadoCivil.Divorciado
-        }
+        this.estadoCivil.divorciar()
     }
 
     enviudar()
     {
-        if (this.estadoCivil == EstadoCivil.Casado)
-        {
-            this.estadoCivil = EstadoCivil.Viudo
-        }
+        this.estadoCivil.enviudar()
     }
 
     morir()
     {
-        this.estadoCivil = EstadoCivil.Difunto
+        this.estadoCivil.morir()
     }
 }
 
 let mainState = () => {
-    let pepito : Persona = new Persona("Pepe")
-    pepito.casar()
-    console.log(`El estado es :  ${pepito.getEstado()}`)
+    let juanita : Persona = new Persona("Juanita")
+    juanita.casar()
+    juanita.divorciar()
+    console.log(`El estado es :  ${juanita.getEstado()}`)
 }
 mainState()
